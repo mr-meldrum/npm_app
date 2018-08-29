@@ -4,6 +4,7 @@ pipeline {
     environment {
         CI = 'true'
         HOME = '.'
+        IMAGE = 'stag-docker-repo.clix.io:5000/getintodevops'
     }
 
     stages {
@@ -53,20 +54,15 @@ pipeline {
     }
 
     stage('Build/Push docker image') {
-        agent { 
-            any {
-                reuseNode true
-            }
-        }
+        agent any
+        
         steps {
-            echo 'Starting to build docker image'
-
-            script {
-                docker.withRegistry('https://stag-docker-repo.clix.io:5000') {
-                    def customImage = docker.build("npm-app:${env.BUILD_ID}")
-                    customImage.push()
-                }
-            }
+            sh """
+                docker build -t ${IMAGE} .
+                docker tag ${IMAGE} ${IMAGE}:${env.BUILD_ID}
+                docker push ${IMAGE}:${env.BUILD_ID}
+                docker push ${IMAGE}:latest
+            """
         }
     }
 }
