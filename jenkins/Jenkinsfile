@@ -1,4 +1,5 @@
 def IMAGE = 'stag-docker-repo.clix.io:5000/npm-app'
+def VERSION = ${env.BUILD_ID}
 
 pipeline {
     agent any
@@ -61,14 +62,14 @@ pipeline {
             steps {
                 sh """
                     docker build -t ${IMAGE} .
-                    docker tag ${IMAGE} ${IMAGE}:${env.BUILD_ID}
+                    docker tag ${IMAGE} ${IMAGE}:${VERSION}
                 """
             }
         }
 
         stage('Image test') {
             agent {
-                docker { image ${IMAGE}:${env.BUILD_ID} }
+                docker { image ${IMAGE}:${VERSION} }
 	    }
 	    steps {
                 sh 'npm test'
@@ -78,7 +79,7 @@ pipeline {
         stage('Push image') {
             steps {
                 sh """
-                    docker push ${IMAGE}:${env.BUILD_ID}
+                    docker push ${IMAGE}:${VERSION}
                     docker push ${IMAGE}:latest
                 """
             }
