@@ -4,7 +4,7 @@ pipeline {
     environment {
         CI = 'true'
         HOME = '.'
-        IMAGE = 'stag-docker-repo.clix.io:5000/getintodevops'
+        IMAGE = 'stag-docker-repo.clix.io:5000/npm-app'
     }
 
     stages {

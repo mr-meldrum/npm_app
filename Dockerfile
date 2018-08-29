@@ -1,7 +1,7 @@
 FROM node:6-alpine
 
 COPY ./build ./
-COPY ./node-modules ./
+COPY ./node_modules ./
 
 EXPOSE 3000
 
