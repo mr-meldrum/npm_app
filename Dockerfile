@@ -1,6 +1,6 @@
 FROM node:6-alpine
 
-COPY ./.src ./.src
+COPY ./src ./src
 COPY ./build ./build
 COPY ./node_modules ./node_modules
 COPY ./package.json ./
