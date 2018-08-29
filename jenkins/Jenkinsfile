@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     environment {
         CI = 'true'
@@ -16,53 +16,52 @@ pipeline {
                     args '-p 3000:3000'
                 }
             }
-        steps {
-            sh 'printenv || true'
-            sh 'pwd || true'
-            sh 'hostname || true'
-            sh 'npm install'
-            sh 'touch file.tmp'
-        }
-    }
-
-    stage('Test') {
-        agent {
-            docker {
-                reuseNode true
-                image 'node:6-alpine'
-                args '-p 3000:3000'
+            steps {
+                sh 'printenv || true'
+                sh 'pwd || true'
+                sh 'hostname || true'
+                sh 'npm install'
+                sh 'touch file.tmp'
             }
         }
-        steps {
-            sh './jenkins/scripts/test.sh'
-        }
-    }
 
-    stage('Deliver') {
-        agent {
-            docker {
-                reuseNode true
-                image 'node:6-alpine'
-                args '-p 3000:3000'
+        stage('Test') {
+            agent {
+                docker {
+                    reuseNode true
+                    image 'node:6-alpine'
+                    args '-p 3000:3000'
+                }
+            }
+            steps {
+                sh './jenkins/scripts/test.sh'
             }
         }
-        steps {
-            sh './jenkins/scripts/deliver.sh'
-            input message: 'Finished using the web site? (Click "Proceed" to continue)'
-            sh './jenkins/scripts/kill.sh'
-        }
-    }
 
-    stage('Build/Push docker image') {
-        agent any
-        
-        steps {
-            sh """
-                docker build -t ${IMAGE} .
-                docker tag ${IMAGE} ${IMAGE}:${env.BUILD_ID}
-                docker push ${IMAGE}:${env.BUILD_ID}
-                docker push ${IMAGE}:latest
-            """
+        stage('Deliver') {
+            agent {
+                docker {
+                    reuseNode true
+                    image 'node:6-alpine'
+                    args '-p 3000:3000'
+                }
+            }
+            steps {
+                sh './jenkins/scripts/deliver.sh'
+                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                sh './jenkins/scripts/kill.sh'
+            }
+        }
+
+        stage('Build/Push docker image') {
+            steps {
+                sh """
+                    docker build -t ${IMAGE} .
+                    docker tag ${IMAGE} ${IMAGE}:${env.BUILD_ID}
+                    docker push ${IMAGE}:${env.BUILD_ID}
+                    docker push ${IMAGE}:latest
+                """
+            }
         }
     }
 }
