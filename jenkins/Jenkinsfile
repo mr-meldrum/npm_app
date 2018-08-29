@@ -40,7 +40,7 @@ pipeline {
 
         stage('UI Test') {
             options {
-                timeout(time: 3, unit: 'MINUTES') 
+                timeout(time: 2, unit: 'MINUTES') 
             }
             agent {
                 docker {
@@ -64,7 +64,6 @@ pipeline {
                 """
             }
         }
-/*
 
         stage('Image test') {
             agent {
@@ -85,6 +84,5 @@ pipeline {
                 """
             }
         }
-*/
     }
 }
