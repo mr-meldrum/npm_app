@@ -1,11 +1,13 @@
 FROM node:6-alpine
 
-COPY ./src ./src
-COPY ./build ./build
-COPY ./node_modules ./node_modules
-COPY ./package.json ./
-COPY ./public ./public
+WORKDIR /app
 
-EXPOSE 3000
+COPY ./build /app/build
+COPY ./node_modules /app/node_modules
+COPY ./package.json /app/
+COPY ./public /app/public
+COPY ./src /app/src
+
+EXPOSE 3000 3000
 
 CMD ["npm", "start"]
