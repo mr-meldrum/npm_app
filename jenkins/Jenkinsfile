@@ -68,7 +68,7 @@ pipeline {
         stage('Image test') {
             agent {
                 docker {
-                    image "${IMAGE}:${env.BUILD_ID}"
+                    image ${IMAGE}:${env.BUILD_ID}
 		}
 	    }
 	    steps {
