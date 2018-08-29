@@ -5,10 +5,12 @@ pipeline {
             args '-p 3000:3000'
         }
     }
+
     environment {
         CI = 'true'
 	HOME = '.'
     }
+
     stages {
         stage('Build') {
             steps {
@@ -19,11 +21,26 @@ pipeline {
                 sh 'touch file.tmp'
             }
         }
+
         stage('Test') {
             steps {
                 sh './jenkins/scripts/test.sh'
             }
         }
+
+        stage('Build image') {
+            steps {
+                echo 'Starting to build docker image'
+
+                script {
+		    docker.withRegistry('https://stag-docker-repo.clix.io:5000') {
+                        def customImage = docker.build("npm-app:${env.BUILD_ID}")
+                        customImage.push()
+		    }
+                }
+            }
+        }
+
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
