@@ -68,12 +68,11 @@ pipeline {
         }
 
         stage('Image test') {
-            agent {
-                docker { image 'stag-docker-repo.clix.io:5000/npm-app:latest' }
+            script {
+		docker.image('stag-docker-repo.clix.io:5000/npm-app:latest') {
+		  sh 'npm test'
+		}
 	    }
-	    steps {
-                sh 'npm test'
-            }
         }
 
         stage('Push image') {
