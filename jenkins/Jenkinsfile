@@ -72,9 +72,12 @@ pipeline {
 		echo "Launching docker image"
 
                 script {
-    		    docker.image('stag-docker-repo.clix.io:5000/npm-app:latest') {
-		        sh 'npm test'
+    		    docker.image('stag-docker-repo.clix.io:5000/npm-app:latest').inside {
+			echo "Starting npm testing"
+			def results = sh(returnStdout: true, script 'npm test')
 		    }
+
+		echo "The results are: ${results}"
 	        }
 	    }
         }
