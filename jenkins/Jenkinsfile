@@ -69,7 +69,7 @@ pipeline {
 
         stage('Image test') {
             agent {
-                docker { image "${IMAGE}:${VERSION}" }
+                docker { image ${IMAGE}:${VERSION} }
 	    }
 	    steps {
                 sh 'npm test'
