@@ -68,10 +68,14 @@ pipeline {
         }
 
         stage('Image test') {
-            script {
-		docker.image('stag-docker-repo.clix.io:5000/npm-app:latest') {
-		  sh 'npm test'
-		}
+            steps {
+		echo "Launching docker image"
+
+                script {
+    		    docker.image('stag-docker-repo.clix.io:5000/npm-app:latest') {
+		        sh 'npm test'
+		    }
+	        }
 	    }
         }
 
